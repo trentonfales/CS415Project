@@ -1,0 +1,4 @@
+PGHOST="localhost"
+PGDATABASE="CS415"
+PGUSER="postgres"
+PGPASSWORD="domin0"

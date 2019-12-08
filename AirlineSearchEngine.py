@@ -4,27 +4,37 @@ Collaborators: Kelsey Donavin, Connor Donegan, Trenton Fales, Hermes Obiang
 Course: Big Data
 '''
 
-server_name = "PostgreSQL 12"
-db_name = "CS415"
 #table names: airlines, airports, routes
 
-import pyodbc
+import psycopg2
+import sys, os
+import numpy as py
+import pandas as pd
+import example_psql as creds
+import pandas.io.sql as psql
 
-conn = pyodbc.connect('Driver={SQL Server};'
-                      'Server=server_name;'
-                      'Database=db_name;'
-                      'Trusted_Connection=yes;')
+## ** LOAD PSQL DATABASE ** ##
 
+# Set up a connection to the postgres server
+conn_string = "host=" + creds.PGHOST + " port=" + "5432" + " dbname=" + creds.PGDATABASE + " user=" + creds.PGUSER \
+    +" password=" + creds.PGPASSWORD
+conn = psycopg2.connect(conn_string)
+print("Connected!")
+
+# Create a cursor object
 cursor = conn.cursor()
 
-cursor = conn.cursor()
+def load_data(schema, table):
 
-# cursor.execute('SELECT * FROM db_name.Table')
+    sql_command = "SELECT * FROM {}.{};".format(str(schema), str(table))
+    print (sql_command)
 
-for row in cursor:
-    print(row)
+    # Load the data
+    data = pd.read_sql(sql_command, conn)
 
-    
+    print(data.shape)
+    return (data)
+
 def displayMainMenu():
     print("\n\nPlease select an option:")
     print("1. Airport and Airline Search")
@@ -99,6 +109,8 @@ def tripRecommendation():
             stops = input("Please enter maximum number of hops: ")
         elif (option == '4'):
             break;
+
+
     
 def main():
     while True:
