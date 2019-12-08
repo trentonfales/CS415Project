@@ -56,16 +56,23 @@ def airportAndAirlineSearch():
         
         if (option == '1'):
             country = input("Please select a country: ")
-            # Insert query for country here
+            sql_command = "SELECT name FROM airports WHERE country LIKE " + "'" + country + '%' + "'"
+            data = pd.read_sql(sql_command, conn)
+            print(data)
+            # data.to_csv()
         elif (option == '2'):
             stops = input("Please enter number of stops: ")
-            # Insert query for X stops here
+            sql_command = "SELECT airline FROM routes WHERE stops LIKE " + "'" + stops + '%' + "'"
+            data = pd.read_sql(sql_command, conn)
+            print(data)
         elif (option == '3'):
-            print()
-            # Insert query for code share here
+            sql_command = "SELECT airline FROM routes WHERE codeshare LIKE 'Y%'"
+            data = pd.read_sql(sql_command, conn)
+            print(data)
         elif (option == '4'):
-            print()
-            # Insert query for active airlines in US here
+            sql_command = "SELECT name FROM airlines WHERE active LIKE 'Y%'"
+            data = pd.read_sql(sql_command, conn)
+            print(data)
         elif (option == '5'):
             break
     
@@ -78,11 +85,24 @@ def airlineAggregation():
         option = input("Option: ")
         
         if (option == '1'):
-            print()
-            # Insert code here
+            sql_command = "SELECT COUNT(country), country FROM airports Group by country ORDER BY COUNT(country) desc"
+            country_list = pd.read_sql(sql_command, conn)
+            print(country_list)
         elif (option == '2'):
             numCities = input("Number of cities to report: ")
-            # Insert code here
+            sql_command = "SELECT COUNT(source_airport), source_airport FROM routes GROUP BY source_airport ORDER BY Count(source_airport) desc"
+            source_list = pd.read_sql(sql_command, conn)
+            # print(source_list)
+            sql_command = "SELECT COUNT(destination_airport), destination_airport FROM routes GROUP BY destination_airport ORDER BY Count(destination_airport) desc"
+            destination_list = pd.read_sql(sql_command, conn)
+            i = 0
+            print("\nTotal\tCity")
+
+            while i < int(numCities):
+                total = source_list.loc[i][0]+ destination_list.loc[i][0]
+                print(total, "\t", source_list.loc[i][1])
+                i += 1
+
         elif (option == '3'):
             break
     
