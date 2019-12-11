@@ -118,15 +118,29 @@ def tripRecommendation():
         if (option == '1'):
             city1 = input("Please enter a departure city: ")
             city2 = input("Please enter an arrival city: ")
-            # Insert code here
+            sql_command = "DROP VIEW IF EXISTS plan;" \
+                          "CREATE VIEW plan AS " \
+                          "SELECT source_airport_id,source_airport,destination_airport,destination_airport_id,airline_id FROM routes WHERE source_airport_id IN (SELECT airport_id FROM airports WHERE city LIKE" + "'" + city1 + "%'" +");" \
+                          "SELECT source_airport,destination_airport,airline_id from plan where destination_airport_id in(SELECT airport_id FROM airports WHERE city LIKE " + "'" + city2 + "%'" +");"
+            data_list = pd.read_sql(sql_command, conn)
+            # data_list = pd.read_sql("DROP VIEW route_plan", conn)
+            print(data_list)
+            # pd.read_sql("DROP VIEW plan;", conn)
+            # sql_command = "DROP VIEW route_plan"
+            # pd.read_sql(sql_command, conn)
         elif (option == '2'):
-            city1 = input("Please enter a departure city: ")
-            city2 = input("Please enter an arrival city: ")
+            city1 = input("Please enter a departure airport: ")
+            city2 = input("Please enter an arrival airport: ")
             stops = input("Please enter number of stops: ")
-            # Insert code here
+            sql_command = "SELECT stops,airline_id,source_airport,destination_airport FROM routes WHERE destination_airport LIKE " + "'" + city1 + "%'" + " AND source_airport LIKE " + "'" + city2 + "%'"
+            data_list = pd.read_sql(sql_command, conn)
+            print(data_list)
         elif (option == '3'):
-            city = input("Please enter a city: ")
+            city = input("Please enter a departure airport: ")
             stops = input("Please enter maximum number of hops: ")
+            sql_command = "SELECT stops,airline_id,source_airport,destination_airport FROM routes WHERE source_airport LIKE " + "'" + city + "%'"
+            data_list = pd.read_sql(sql_command, conn)
+            print(data_list)
         elif (option == '4'):
             break;
 
